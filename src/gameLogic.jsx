@@ -30,9 +30,9 @@ export const insertFood = (grid) => {
     ).isSnake;
 
     if (isSnake) {
+      // recursive fn
       return insertFood(grid);
     } else {
-      console.log({ x, y });
       return { x, y };
     }
   };
@@ -58,6 +58,10 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
   let destination = {};
   let head = {};
   const snakeLength = grid.filter((square) => square.isSnake).length;
+  const bodyParts = grid
+    .filter((square) => typeof square.part === "number")
+    ?.sort((a, b) => a.part - b.part);
+  console.log(bodyParts);
 
   // helpers
   const checkLim = (position, limInf, limSup) => {
@@ -88,7 +92,8 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
       }
       if (snakeLength > 2) {
         // case snake with body parts
-        if (square.part === snakeLength) {
+
+        if (square.part === bodyParts[0].part) {
           square = {
             x: square.x,
             y: square.y,
@@ -163,6 +168,7 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
       }
       return square;
     });
+    // create new food square after eating
     updatedGrid = insertFood(updatedGrid);
     return updatedGrid;
   };
@@ -261,27 +267,4 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     ? { updatedGrid, actualDirection }
     : { updatedGrid: grid, actualDirection: previousDirection };
   return conditionalReturn;
-};
-
-export const moveSnakeManual = (grid, direction, previousDirection) => {
-  let snakeLength = grid.filter((square) => square.snake).length;
-  let updatedGrid = [];
-
-  if (previousDirection === direction) {
-    console.log("illegal move");
-  }
-  if (direction === "down") {
-    updatedGrid = grid.map((square) => {
-      if (square.isSnake && square.part && square.part === "head") {
-        updatedGrid = moveSnakeAuto(grid, "down");
-      }
-      return square;
-    });
-  }
-  if (direction === "up") {
-  }
-  if (direction === "left") {
-  }
-  if (direction === "right") {
-  }
 };
