@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.grid {
+  display: grid;
+  /* justify-content: center; */
+  grid-template-columns: repeat(3, 80px);
+  grid-template-rows: repeat(3, 80px);
+}
+
+.square {
+  background: grey;
+}
+.square.snake {
+  background: yellowgreen;
+}
+.square.snake.head {
+  background: rgb(160, 230, 21);
+}
+
+.square.food {
+  background: tomato;
+}
