@@ -1,7 +1,7 @@
 export const loadGame = () => {
   let grid = [
-    { x: 0, y: 0, isSnake: true, isFood: false, part: "tail" },
-    { x: 1, y: 0, isSnake: true, isFood: false, part: "head" },
+    { x: 0, y: 0, isSnake: true, isFood: false, part: 2 },
+    { x: 1, y: 0, isSnake: true, isFood: false, part: 1 },
     { x: 2, y: 0, isSnake: false, isFood: false },
     { x: 0, y: 1, isSnake: false, isFood: false },
     { x: 1, y: 1, isSnake: false, isFood: false },
@@ -52,81 +52,32 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
   const xLimSup = 2;
   const yLimInf = 0;
   const yLimSup = 2;
-  // vars
-  let updatedGrid = [];
-  let tail = {};
-  let destination = {};
-  let head = {};
-  const snakeLength = grid.filter((square) => square.isSnake).length;
-  const bodyParts = grid
-    .filter((square) => typeof square.part === "number")
-    ?.sort((a, b) => a.part - b.part);
-  console.log(bodyParts);
 
   // helpers
+  const getDestination = (head, actualDirection) => {
+    // case right
+    if (actualDirection === "right") {
+      return { x: head.x + 1, y: head.y };
+    }
+    // case left
+    if (actualDirection === "left") {
+      return { x: head.x - 1, y: head.y };
+    }
+    // case down
+    if (actualDirection === "down") {
+      return { x: head.x, y: head.y + 1 };
+    }
+    // case up
+    if (actualDirection === "up") {
+      return { x: head.x, y: head.y - 1 };
+    }
+  };
   const checkLim = (position, limInf, limSup) => {
     if (position < limInf || position > limSup) {
       return false;
     } else {
       return true;
     }
-  };
-  const swapSquares = (tail, destination, head, grid) => {
-    let updatedGrid = grid.map((square) => {
-      if (square.x === tail.x && square.y === tail.y) {
-        square = {
-          x: tail.x,
-          y: tail.y,
-          isSnake: false,
-          isFood: false,
-        };
-      }
-      if (square.x === destination.x && square.y === destination.y) {
-        square = {
-          x: destination.x,
-          y: destination.y,
-          isSnake: true,
-          isFood: false,
-          part: "head",
-        };
-      }
-      if (snakeLength > 2) {
-        // case snake with body parts
-
-        if (square.part === bodyParts[0].part) {
-          square = {
-            x: square.x,
-            y: square.y,
-            isSnake: true,
-            isFood: false,
-            part: "tail",
-          };
-        }
-        if (square.x === head.x && square.y === head.y) {
-          square = {
-            x: square.x,
-            y: square.y,
-            isSnake: true,
-            isFood: false,
-            part: snakeLength,
-          };
-        }
-      } else {
-        // case snake with two parts head and tail
-        if (square.x === head.x && square.y === head.y) {
-          square = {
-            x: head.x,
-            y: head.y,
-            isSnake: true,
-            isFood: false,
-            part: "tail",
-          };
-        }
-      }
-
-      return square;
-    });
-    return updatedGrid;
   };
   const checkRules = (actualDirection, previousDirection) => {
     // if (actualDirection === previousDirection) {
@@ -146,26 +97,78 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     }
     return true;
   };
-  const eatFood = (head, destination, grid) => {
+  const swapSquares = (tail, destination, head, grid) => {
+    let body = snake.filter((part) => part.part !== snake.length);
+    console.log(body);
     let updatedGrid = grid.map((square) => {
-      if (square.x === head.x && square.y === head.y) {
+      // reset previous tail
+      if (square.x === tail.x && square.y === tail.y) {
         square = {
-          x: head.x,
-          y: head.y,
-          isSnake: true,
+          x: square.x,
+          y: square.y,
+          isSnake: false,
           isFood: false,
-          part: snakeLength + 1,
         };
       }
+      // assign new head
       if (square.x === destination.x && square.y === destination.y) {
         square = {
-          x: destination.x,
-          y: destination.y,
+          x: square.x,
+          y: square.y,
           isSnake: true,
           isFood: false,
-          part: "head",
+          part: 1,
         };
       }
+      // adjust snake body
+      for (let i in body) {
+        if (body[i].x === square.x && body[i].y === square.y) {
+          square = {
+            ...square,
+            part: square.part + 1,
+          };
+        }
+      }
+      return square;
+    });
+    return updatedGrid;
+  };
+  const eatFood = (head, tail, destination, grid) => {
+    const body = snake.filter((part) => part.part !== 1);
+    let updatedGrid = grid.map((square) => {
+      // reset previous head
+      if (square.x === head.x && square.y === head.y) {
+        square = {
+          x: square.x,
+          y: square.y,
+          isSnake: true,
+          isFood: false,
+          part: 2,
+        };
+      }
+      // assign new head
+      if (square.x === destination.x && square.y === destination.y) {
+        square = {
+          x: square.x,
+          y: square.y,
+          isSnake: true,
+          isFood: false,
+          part: 1,
+        };
+      }
+      // adjust snake body
+      for (let i in body) {
+        if (body[i].x === square.x && body[i].y === square.y) {
+          square = {
+            x: square.x,
+            y: square.y,
+            isSnake: true,
+            isFood: false,
+            part: square.part + 1,
+          };
+        }
+      }
+
       return square;
     });
     // create new food square after eating
@@ -173,96 +176,27 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     return updatedGrid;
   };
 
+  // vars
+  let updatedGrid = [];
+  const snake = grid.filter((square) => square.isSnake);
+  const head = grid.find((square) => square.part === 1);
+  const tail = grid.find((square) => square.part === snake.length);
+  const destination = getDestination(head, actualDirection);
+
   // check rules
-  if (checkRules(actualDirection, previousDirection)) {
-    // move cases
-    if (actualDirection === "right") {
-      updatedGrid = grid.map((square, i, grid) => {
-        if (square.part === "tail") {
-          tail = square;
-        }
-        if (square.part === "head") {
-          destination = { x: square.x + 1, y: square.y };
-          head = square;
-        }
-        return square;
-      });
-      if (
-        checkLim(destination.x, xLimInf, xLimSup) &&
-        destination.y === head.y
-      ) {
-        const isFood = grid.find(
-          (square) => square.x === destination.x && square.y === destination.y
-        ).isFood;
-        updatedGrid = isFood
-          ? eatFood(head, destination, updatedGrid)
-          : swapSquares(tail, destination, head, updatedGrid);
-      }
-    }
-    if (actualDirection === "left") {
-      updatedGrid = grid.map((square, i, grid) => {
-        if (square.part === "tail") {
-          tail = square;
-        }
-        if (square.part === "head") {
-          destination = { x: square.x - 1, y: square.y };
-          head = square;
-        }
-        return square;
-      });
-      if (
-        checkLim(destination.x, xLimInf, xLimSup) &&
-        destination.y === head.y
-      ) {
-        const isFood = grid.find(
-          (square) => square.x === destination.x && square.y === destination.y
-        ).isFood;
-        updatedGrid = isFood
-          ? eatFood(head, destination, updatedGrid)
-          : swapSquares(tail, destination, head, updatedGrid);
-      }
-    }
-    if (actualDirection === "down") {
-      updatedGrid = grid.map((square, i, grid) => {
-        if (square.part === "tail") {
-          tail = square;
-        }
-        if (square.part === "head") {
-          destination = { x: square.x, y: square.y + 1 };
-          head = square;
-        }
-        return square;
-      });
-      if (checkLim(destination.y, yLimInf, yLimSup)) {
-        const isFood = grid.find(
-          (square) => square.x === destination.x && square.y === destination.y
-        ).isFood;
-        updatedGrid = isFood
-          ? eatFood(head, destination, updatedGrid)
-          : swapSquares(tail, destination, head, updatedGrid);
-      }
-    }
-    if (actualDirection === "up") {
-      updatedGrid = grid.map((square, i, grid) => {
-        if (square.part === "tail") {
-          tail = square;
-        }
-        if (square.part === "head") {
-          destination = { x: square.x, y: square.y - 1 };
-          head = square;
-        }
-        return square;
-      });
-      if (checkLim(destination.y, yLimInf, yLimSup)) {
-        const isFood = grid.find(
-          (square) => square.x === destination.x && square.y === destination.y
-        ).isFood;
-        updatedGrid = isFood
-          ? eatFood(head, destination, updatedGrid)
-          : swapSquares(tail, destination, head, updatedGrid);
-      }
-    }
+  if (
+    checkRules(actualDirection, previousDirection) &&
+    checkLim(destination.x, xLimInf, xLimSup) &&
+    checkLim(destination.y, yLimInf, yLimSup)
+  ) {
+    const isFood = grid.find(
+      (square) => square.x === destination.x && square.y === destination.y
+    ).isFood;
+    updatedGrid = isFood
+      ? eatFood(head, tail, destination, grid)
+      : swapSquares(tail, destination, head, grid);
   }
+
   const conditionalReturn = updatedGrid.length
     ? { updatedGrid, actualDirection }
     : { updatedGrid: grid, actualDirection: previousDirection };

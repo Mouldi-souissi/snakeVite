@@ -33,7 +33,7 @@ const GameGrid = () => {
           <div
             key={i}
             className={`square ${square.isSnake && "snake"} ${
-              square.isSnake && square.part === "head" && "head"
+              square.isSnake && square.part === 1 && "head"
             } ${square.isFood && "food"}`}
           ></div>
         ))}
