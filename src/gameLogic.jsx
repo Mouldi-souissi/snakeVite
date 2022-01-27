@@ -48,9 +48,7 @@ export const insertFood = (grid) => {
 
 export const moveSnake = (grid, actualDirection, previousDirection) => {
   // grid limits
-  const xLimInf = 0;
   const xLimSup = 2;
-  const yLimInf = 0;
   const yLimSup = 2;
 
   // helpers
@@ -99,7 +97,6 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
   };
   const swapSquares = (tail, destination, head, grid) => {
     let body = snake.filter((part) => part.part !== snake.length);
-    console.log(body);
     let updatedGrid = grid.map((square) => {
       // reset previous tail
       if (square.x === tail.x && square.y === tail.y) {
@@ -182,23 +179,27 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
   const head = grid.find((square) => square.part === 1);
   const tail = grid.find((square) => square.part === snake.length);
   const destination = getDestination(head, actualDirection);
+  const isDestinationSnake = grid.find(
+    (square) => square.x === destination.x && square.y === destination.y
+  )?.isSnake;
+  const isFood = grid.find(
+    (square) => square.x === destination.x && square.y === destination.y
+  )?.isFood;
 
-  // check rules
   if (
-    checkRules(actualDirection, previousDirection) &&
-    checkLim(destination.x, xLimInf, xLimSup) &&
-    checkLim(destination.y, yLimInf, yLimSup)
+    checkLim(destination.x, 0, xLimSup) &&
+    checkLim(destination.y, 0, yLimSup) &&
+    !isDestinationSnake
   ) {
-    const isFood = grid.find(
-      (square) => square.x === destination.x && square.y === destination.y
-    ).isFood;
-    updatedGrid = isFood
-      ? eatFood(head, tail, destination, grid)
-      : swapSquares(tail, destination, head, grid);
+    // check rules
+    if (checkRules(actualDirection, previousDirection)) {
+      updatedGrid = isFood
+        ? eatFood(head, tail, destination, grid)
+        : swapSquares(tail, destination, head, grid);
+    }
+  } else {
+    return { updatedGrid, previousDirection };
   }
 
-  const conditionalReturn = updatedGrid.length
-    ? { updatedGrid, actualDirection }
-    : { updatedGrid: grid, actualDirection: previousDirection };
-  return conditionalReturn;
+  return { updatedGrid, actualDirection };
 };

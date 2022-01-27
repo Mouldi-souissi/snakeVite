@@ -2,8 +2,8 @@ import { useEffect, React, useContext } from "react";
 import { gameContext } from "./gameContext";
 
 const GameGrid = () => {
-  const { grid, move } = useContext(gameContext);
-
+  const { grid, move, isGameOver, restart } = useContext(gameContext);
+  // handle direction key press
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.code === "ArrowRight") {
@@ -26,18 +26,28 @@ const GameGrid = () => {
     };
   }, [move]);
 
+  const squares = () => {
+    return grid.map((square, i) => (
+      <div
+        key={i}
+        className={`square ${square.isSnake && "snake"} ${
+          square.isSnake && square.part === 1 && "head"
+        } ${square.isFood && "food"}`}
+      ></div>
+    ));
+  };
+
   return (
     <div className="d-flex align-items-center justify-content-center">
-      <div className="grid">
-        {grid.map((square, i) => (
-          <div
-            key={i}
-            className={`square ${square.isSnake && "snake"} ${
-              square.isSnake && square.part === 1 && "head"
-            } ${square.isFood && "food"}`}
-          ></div>
-        ))}
-      </div>
+      <div className="grid">{!isGameOver && squares()}</div>
+      {isGameOver && (
+        <div className="position-absolute top-50 start-50 translate-middle d-flex flex-column">
+          <div className="h1">GameOver</div>
+          <button className="btn btn-dark btn-lg" onClick={restart}>
+            Restart
+          </button>
+        </div>
+      )}
     </div>
   );
 };

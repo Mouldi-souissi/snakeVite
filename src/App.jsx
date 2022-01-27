@@ -6,7 +6,7 @@ function App() {
     <div className="App">
       <div className="container">
         <div className="d-flex align-items-center justify-content-between my-5">
-          <h1>Snake</h1>
+          <h1 className="display-2">Snake</h1>
         </div>
         <GameGrid />
       </div>
