@@ -1,19 +1,32 @@
-export const loadGame = () => {
-  let grid = [
-    { x: 0, y: 0, isSnake: true, isFood: false, part: 2 },
-    { x: 1, y: 0, isSnake: true, isFood: false, part: 1 },
-    { x: 2, y: 0, isSnake: false, isFood: false },
-    { x: 0, y: 1, isSnake: false, isFood: false },
-    { x: 1, y: 1, isSnake: false, isFood: false },
-    { x: 2, y: 1, isSnake: false, isFood: false },
-    { x: 0, y: 2, isSnake: false, isFood: false },
-    { x: 1, y: 2, isSnake: false, isFood: false },
-    { x: 2, y: 2, isSnake: false, isFood: false },
-  ];
+export const loadGame = (limX, limY) => {
+  let grid = [];
 
-  let upadatedGrid = insertFood(grid);
-  return upadatedGrid;
+  // init grid
+  for (let i = 0; i <= limX; i++) {
+    for (let j = 0; j <= limY; j++) {
+      grid.push({ x: j, y: i, isSnake: false, isFood: false });
+    }
+  }
+
+  // insert snake
+  let updatedGrid =
+    grid.length &&
+    grid.map((square) => {
+      if (square.x === 0 && square.y === 0) {
+        square = { ...square, isSnake: true, part: 2 };
+      }
+      if (square.x === 1 && square.y === 0) {
+        square = { ...square, isSnake: true, part: 1 };
+      }
+      return square;
+    });
+
+  // insert food
+  updatedGrid = insertFood(updatedGrid);
+
+  return updatedGrid;
 };
+
 export const insertFood = (grid) => {
   const generateRandomFoodLocation = () => {
     // random
@@ -201,5 +214,5 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     return { updatedGrid, previousDirection };
   }
 
-  return { updatedGrid, actualDirection };
+  return updatedGrid;
 };
