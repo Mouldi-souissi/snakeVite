@@ -41,7 +41,7 @@ export const GameContextProvider = (props) => {
       if (grid.length && previousDirection && !isGameOver) {
         move(previousDirection);
       }
-    }, 500);
+    }, 200);
     return () => {
       clearInterval(timer);
     };

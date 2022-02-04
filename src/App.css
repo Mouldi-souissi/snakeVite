@@ -10,7 +10,7 @@
   grid-template-columns: repeat(5, 80px);
   grid-template-rows: repeat(5, 80px);
   filter: drop-shadow(20px 30px 10px grey);
-  transition: all 0.1s ease-in-out;
+  /* transition: all 0.1s ease-in-out; */
 }
 .square {
   background: grey;
