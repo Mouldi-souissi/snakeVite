@@ -35,8 +35,8 @@ export const insertFood = (grid) => {
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
     };
-    let x = getRandomIntInclusive(0, 2);
-    let y = getRandomIntInclusive(0, 2);
+    let x = getRandomIntInclusive(0, 4);
+    let y = getRandomIntInclusive(0, 4);
     // food location should be diffent from snake location
     let isSnake = grid.find(
       (square) => square.x === x && square.y === y
@@ -61,8 +61,8 @@ export const insertFood = (grid) => {
 
 export const moveSnake = (grid, actualDirection, previousDirection) => {
   // grid limits
-  const xLimSup = 2;
-  const yLimSup = 2;
+  const xLimSup = 4;
+  const yLimSup = 4;
 
   // helpers
   const getDestination = (head, actualDirection) => {
@@ -91,9 +91,6 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     }
   };
   const checkRules = (actualDirection, previousDirection) => {
-    // if (actualDirection === previousDirection) {
-    //   return false;
-    // }
     if (
       (actualDirection === "right" && previousDirection === "left") ||
       (actualDirection === "left" && previousDirection === "right")
@@ -108,7 +105,7 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     }
     return true;
   };
-  const swapSquares = (tail, destination, head, grid) => {
+  const swapSquares = (tail, destination, grid) => {
     let body = snake.filter((part) => part.part !== snake.length);
     let updatedGrid = grid.map((square) => {
       // reset previous tail
@@ -143,7 +140,7 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     });
     return updatedGrid;
   };
-  const eatFood = (head, tail, destination, grid) => {
+  const eatFood = (head, destination, grid) => {
     const body = snake.filter((part) => part.part !== 1);
     let updatedGrid = grid.map((square) => {
       // reset previous head
@@ -207,8 +204,8 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
     // check rules
     if (checkRules(actualDirection, previousDirection)) {
       updatedGrid = isFood
-        ? eatFood(head, tail, destination, grid)
-        : swapSquares(tail, destination, head, grid);
+        ? eatFood(head, destination, grid)
+        : swapSquares(tail, destination, grid);
     }
   } else {
     return { updatedGrid, previousDirection };

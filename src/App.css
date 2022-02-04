@@ -4,24 +4,27 @@
   box-sizing: border-box;
   font-family: sans-serif;
 }
-
 .grid {
   display: grid;
-  /* justify-content: center; */
-  grid-template-columns: repeat(3, 80px);
-  grid-template-rows: repeat(3, 80px);
+  gap: 5px;
+  grid-template-columns: repeat(5, 80px);
+  grid-template-rows: repeat(5, 80px);
+  filter: drop-shadow(20px 30px 10px grey);
+  transition: all 0.1s ease-in-out;
 }
-
 .square {
   background: grey;
+  filter: drop-shadow(2px 3px 4px black);
 }
 .square.snake {
   background: yellowgreen;
+  border: 6px inset yellowgreen;
 }
 .square.snake.head {
   background: rgb(160, 230, 21);
+  position: relative;
 }
-
 .square.food {
   background: tomato;
+  border: 6px inset tomato;
 }

@@ -7,16 +7,8 @@ export const GameContextProvider = (props) => {
   const [grid, setGrid] = useState([]);
   const [previousDirection, setPreviousDirection] = useState("right");
   const [isGameOver, setGameOver] = useState(false);
-  const [limX, setLimX] = useState(2);
-  const [limY, setLimY] = useState(2);
-
-  const checkLim = (position, limInf, limSup) => {
-    if (position < limInf || position > limSup) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  const [limX, setLimX] = useState(4);
+  const [limY, setLimY] = useState(4);
 
   // load grid
   useEffect(() => {
