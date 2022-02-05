@@ -9,6 +9,7 @@ export const GameContextProvider = (props) => {
   const [isGameOver, setGameOver] = useState(false);
   const [limX, setLimX] = useState(4);
   const [limY, setLimY] = useState(4);
+  const [snakeLength, setSnakeLength] = useState(2);
 
   // load grid
   useEffect(() => {
@@ -25,10 +26,15 @@ export const GameContextProvider = (props) => {
 
   // move snake on press
   const move = (direction) => {
-    let updatedGrid = moveSnake(grid, direction, previousDirection);
+    let { updatedGrid, snakeLength } = moveSnake(
+      grid,
+      direction,
+      previousDirection
+    );
     if (updatedGrid.length) {
       setGrid(updatedGrid);
       setPreviousDirection(direction);
+      setSnakeLength(snakeLength);
     } else {
       setGameOver(true);
       setPreviousDirection("right");
@@ -48,7 +54,9 @@ export const GameContextProvider = (props) => {
   }, [previousDirection, move]);
 
   return (
-    <gameContext.Provider value={{ grid, isGameOver, move, restart }}>
+    <gameContext.Provider
+      value={{ grid, isGameOver, snakeLength, move, restart }}
+    >
       {props.children}
     </gameContext.Provider>
   );

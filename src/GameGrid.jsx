@@ -6,17 +6,19 @@ const GameGrid = () => {
   // handle direction key press
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.code === "ArrowRight") {
-        move("right");
-      }
-      if (e.code === "ArrowLeft") {
-        move("left");
-      }
-      if (e.code === "ArrowDown") {
-        move("down");
-      }
-      if (e.code === "ArrowUp") {
-        move("up");
+      if (!isGameOver) {
+        if (e.code === "ArrowRight") {
+          move("right");
+        }
+        if (e.code === "ArrowLeft") {
+          move("left");
+        }
+        if (e.code === "ArrowDown") {
+          move("down");
+        }
+        if (e.code === "ArrowUp") {
+          move("up");
+        }
       }
     };
     window.addEventListener("keydown", handleKeyPress);
@@ -42,7 +44,7 @@ const GameGrid = () => {
       <div className="grid">{!isGameOver && squares()}</div>
       {isGameOver && (
         <div className="position-absolute top-50 start-50 translate-middle d-flex flex-column">
-          <div className="h1">GameOver</div>
+          <div className="display-4">GameOver</div>
           <button className="btn btn-dark btn-lg" onClick={restart}>
             Restart
           </button>

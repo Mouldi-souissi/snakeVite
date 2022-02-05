@@ -208,8 +208,8 @@ export const moveSnake = (grid, actualDirection, previousDirection) => {
         : swapSquares(tail, destination, grid);
     }
   } else {
-    return { updatedGrid, previousDirection };
+    return { updatedGrid, snakeLength: snake.length };
   }
 
-  return updatedGrid;
+  return { updatedGrid, snakeLength: snake.length };
 };
