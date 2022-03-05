@@ -31,3 +31,12 @@
 .tomato {
   color: tomato;
 }
+
+.arrow {
+  font-weight: 900px;
+  font-size: 20px;
+  width: 20px;
+  height: 30px;
+  color: tomato;
+  filter: drop-shadow(2px 3px 4px black);
+}

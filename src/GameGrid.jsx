@@ -20,6 +20,11 @@ const GameGrid = () => {
           move("up");
         }
       }
+      if (isGameOver) {
+        if (e.code === "Enter") {
+          restart();
+        }
+      }
     };
     window.addEventListener("keydown", handleKeyPress);
 
@@ -44,7 +49,7 @@ const GameGrid = () => {
       <div className="grid">{!isGameOver && squares()}</div>
       {isGameOver && (
         <div className="position-absolute top-50 start-50 translate-middle d-flex flex-column">
-          <div className="display-4">GameOver</div>
+          <div className="display-5">GameOver</div>
           <button className="btn btn-dark btn-lg" onClick={restart}>
             Restart
           </button>
