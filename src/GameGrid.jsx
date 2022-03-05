@@ -3,7 +3,8 @@ import { gameContext } from "./gameContext";
 
 const GameGrid = () => {
   const { grid, move, isGameOver, restart } = useContext(gameContext);
-  const [touchPosition, setTouchPosition] = useState(null);
+  const [touchPositionX, setTouchPositionX] = useState(null);
+  const [touchPositionY, setTouchPositionY] = useState(null);
   // handle direction key press
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -35,38 +36,40 @@ const GameGrid = () => {
   }, [move]);
 
   const handleTouchStart = (e) => {
-    const touchDown = e.touches[0].clientX;
-    setTouchPosition(touchDown);
+    const touchDownX = e.touches[0].clientX;
+    const touchDownY = e.touches[0].clientY;
+    setTouchPositionX(touchDownX);
+    setTouchPositionY(touchDownY);
   };
 
   const handleTouchMove = (e) => {
-    const touchDown = touchPosition;
+    const touchDownX = touchPositionX;
+    const touchDownY = touchPositionY;
 
-    if (touchDown === null) {
+    if (touchDownX === null || touchDownY === null) {
       return;
     }
 
     const currentTouchX = e.touches[0].clientX;
     const currentTouchY = e.touches[0].clientY;
-    const diffX = touchDown - currentTouchX;
-    const diffY = touchDown - currentTouchY;
+    const diffX = touchDownX - currentTouchX;
+    const diffY = touchDownY - currentTouchY;
 
     if (diffX > 5) {
-      move("right");
-    }
-
-    if (diffX < -5) {
       move("left");
     }
+    if (diffX < -5) {
+      move("right");
+    }
     if (diffY > 5) {
+      move("up");
+    }
+    if (diffY < -5) {
       move("down");
     }
 
-    if (diffY < -5) {
-      move("up");
-    }
-
-    setTouchPosition(null);
+    setTouchPositionX(null);
+    setTouchPositionY(null);
   };
 
   const squares = () => {
