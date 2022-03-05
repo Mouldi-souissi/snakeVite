@@ -1,8 +1,9 @@
-import { useEffect, React, useContext } from "react";
+import { useEffect, React, useContext, useState } from "react";
 import { gameContext } from "./gameContext";
 
 const GameGrid = () => {
   const { grid, move, isGameOver, restart } = useContext(gameContext);
+  const [touchPosition, setTouchPosition] = useState(null);
   // handle direction key press
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -33,6 +34,41 @@ const GameGrid = () => {
     };
   }, [move]);
 
+  const handleTouchStart = (e) => {
+    const touchDown = e.touches[0].clientX;
+    setTouchPosition(touchDown);
+  };
+
+  const handleTouchMove = (e) => {
+    const touchDown = touchPosition;
+
+    if (touchDown === null) {
+      return;
+    }
+
+    const currentTouchX = e.touches[0].clientX;
+    const currentTouchY = e.touches[0].clientY;
+    const diffX = touchDown - currentTouchX;
+    const diffY = touchDown - currentTouchY;
+
+    if (diffX > 5) {
+      move("right");
+    }
+
+    if (diffX < -5) {
+      move("left");
+    }
+    if (diffY > 5) {
+      move("down");
+    }
+
+    if (diffY < -5) {
+      move("up");
+    }
+
+    setTouchPosition(null);
+  };
+
   const squares = () => {
     return grid.map((square, i) => (
       <div
@@ -46,7 +82,13 @@ const GameGrid = () => {
 
   return (
     <div className="d-flex align-items-center justify-content-center">
-      <div className="grid">{!isGameOver && squares()}</div>
+      <div
+        className="grid"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+      >
+        {!isGameOver && squares()}
+      </div>
       {isGameOver && (
         <div className="position-absolute top-50 start-50 translate-middle d-flex flex-column">
           <div className="display-5">GameOver</div>
